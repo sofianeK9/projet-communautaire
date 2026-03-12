@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  createdAt DateTime @default(now())
+}
+
+model Person {
+  id        String   @id @default(cuid())
+  firstName String
+  lastName  String
+  address   String
+  city      String
+  zipCode   String
+  lat       Float?
+  lng       Float?
+  phone     String?
+  email     String?
+  notes     String?
+  mosqueId  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  mosque    Mosque?  @relation(fields: [mosqueId], references: [id])
+}
+
+model Mosque {
+  id          String   @id @default(cuid())
+  name        String
+  address     String
+  city        String
+  lat         Float?
+  lng         Float?
+  association String?
+  description String?
+  donationUrl String?
+  email       String?
+  mawaqitId   String?
+  phone       String?
+  services    String[]
+  website     String?
+  persons     Person[]
+}
+
+model FicheSuivi {
+  id                    String   @id @default(cuid())
+  nom                   String
+  prenom                String
+  mosqueeAssidument     Boolean  @default(false)
+  frequenceTaalim       String?
+  participationActivite Boolean  @default(false)
+  situationFamiliale    String?
+  telephone             String?
+  divers                String?
+  date                  DateTime @default(now())
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  genre                 String   @default("Homme")
+  presenceTaalimNissa   Boolean  @default(false)
+  sortieFemme           Boolean  @default(false)
+  sortieHomme           Boolean  @default(false)
+}
