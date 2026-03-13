@@ -2,6 +2,7 @@ import type { NextAuthConfig } from "next-auth";
 
 // Minimal config for Edge Runtime (middleware) — no DB imports
 export const authConfig: NextAuthConfig = {
+  trustHost: true,
   pages: {
     signIn: "/login",
   },
