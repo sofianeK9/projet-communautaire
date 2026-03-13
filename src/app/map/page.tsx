@@ -19,15 +19,13 @@ export default async function MapPage() {
     <div className="flex h-screen overflow-hidden">
       <Sidebar />
       <main className="flex-1 flex flex-col min-h-0">
-        <div className="px-6 py-4 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0">
-          <div>
-            <h1 className="text-lg font-bold text-white">Carte des membres</h1>
-            <p className="text-slate-400 text-sm">
-              {withGeo} membre{withGeo > 1 ? "s" : ""} géolocalisé{withGeo > 1 ? "s" : ""} ·{" "}
-              <span className="text-emerald-400">● vert</span> = avec mosquée ·{" "}
-              <span className="text-blue-400">● bleu</span> = sans mosquée
-            </p>
-          </div>
+        <div className="px-4 sm:px-6 lg:px-8 py-3 sm:py-4 bg-slate-900 border-b border-slate-800 shrink-0 pl-14 lg:pl-6">
+          <h1 className="text-base sm:text-lg font-bold text-white">Carte des membres</h1>
+          <p className="text-slate-400 text-xs sm:text-sm">
+            {withGeo} géolocalisé{withGeo > 1 ? "s" : ""} ·{" "}
+            <span className="text-emerald-400">●</span> mosquée ·{" "}
+            <span className="text-blue-400">●</span> sans
+          </p>
         </div>
         <div className="flex-1 min-h-0">
           <MapViewClient

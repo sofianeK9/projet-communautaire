@@ -5,11 +5,7 @@ const nextConfig: NextConfig = {
   images: {
     domains: [],
   },
-  webpack: (config) => {
-    // Fix for leaflet in SSR
-    config.resolve.fallback = { fs: false };
-    return config;
-  },
+  turbopack: {},
 };
 
 export default nextConfig;

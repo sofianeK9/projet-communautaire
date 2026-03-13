@@ -27,7 +27,8 @@ export function DashboardCharts({ data }: { data: ChartData[] }) {
   }
 
   return (
-    <ResponsiveContainer width="100%" height={220}>
+    <div className="h-[180px] sm:h-[220px]">
+    <ResponsiveContainer width="100%" height="100%">
       <BarChart data={data} margin={{ top: 4, right: 4, bottom: 24, left: -10 }}>
         <XAxis
           dataKey="name"
@@ -63,5 +64,6 @@ export function DashboardCharts({ data }: { data: ChartData[] }) {
         </Bar>
       </BarChart>
     </ResponsiveContainer>
+    </div>
   );
 }

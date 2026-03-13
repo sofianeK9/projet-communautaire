@@ -93,36 +93,37 @@ export default async function DashboardPage() {
   return (
     <div className="flex min-h-screen bg-slate-950">
       <Sidebar />
-      <main className="flex-1 p-4 lg:p-8 overflow-auto">
+      <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-auto pt-14 lg:pt-8">
 
         {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 sm:mb-8 gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-white">Tableau de bord</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-white">Tableau de bord</h1>
             <p className="text-slate-400 text-sm mt-1">
               Bonjour, <span className="text-slate-300">{session.user?.name || session.user?.email}</span>
             </p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex gap-2 sm:gap-3 w-full sm:w-auto">
             <Link
               href="/people/new"
-              className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold rounded-xl transition shadow-lg shadow-emerald-600/10"
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-semibold rounded-xl transition shadow-lg shadow-emerald-600/10"
             >
               <UserPlus className="w-4 h-4" />
-              Nouveau membre
+              <span className="hidden sm:inline">Nouveau membre</span>
+              <span className="sm:hidden">Nouveau</span>
             </Link>
             <Link
               href="/map"
-              className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium rounded-xl transition"
+              className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-medium rounded-xl transition"
             >
               <MapPin className="w-4 h-4" />
-              Voir la carte
+              Carte
             </Link>
           </div>
         </div>
 
         {/* Stat cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3 mb-6">
           {stats.map((s) => {
             const Icon = s.icon;
             return (
@@ -145,12 +146,12 @@ export default async function DashboardPage() {
 
         {/* GPS coverage bar */}
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 mb-6">
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-1">
             <div className="flex items-center gap-2">
               <MapPin className="w-4 h-4 text-slate-400" />
               <span className="text-slate-300 text-sm font-medium">Couverture GPS</span>
             </div>
-            <span className="text-white font-bold text-sm">{withGeo} / {totalPeople} membres géolocalisés</span>
+            <span className="text-white font-bold text-sm">{withGeo} / {totalPeople} géolocalisés</span>
           </div>
           <div className="w-full bg-slate-800 rounded-full h-2.5">
             <div
@@ -167,9 +168,9 @@ export default async function DashboardPage() {
         </div>
 
         {/* Bottom grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 md:gap-6">
           {/* Chart */}
-          <div className="lg:col-span-3 bg-slate-900 border border-slate-800 rounded-xl p-6">
+          <div className="md:col-span-3 bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-white font-semibold">Membres par mosquée</h2>
               <Link href="/mosques" className="text-slate-500 hover:text-slate-300 text-xs flex items-center gap-1 transition">
@@ -180,7 +181,7 @@ export default async function DashboardPage() {
           </div>
 
           {/* Recent people */}
-          <div className="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-6">
+          <div className="md:col-span-2 bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-white font-semibold">Derniers ajouts</h2>
               <Link href="/people/new" className="text-emerald-500 hover:text-emerald-400 text-xs flex items-center gap-1 transition">

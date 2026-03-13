@@ -73,7 +73,6 @@ function PrayerTimesPanel({ mawaqitId }: { mawaqitId: string }) {
 
   if (!times) return null;
 
-  // Déterminer la prochaine prière
   const now = new Date();
   const nowMin = now.getHours() * 60 + now.getMinutes();
   const toMin = (t: string) => {
@@ -97,7 +96,7 @@ function PrayerTimesPanel({ mawaqitId }: { mawaqitId: string }) {
           </span>
         )}
       </div>
-      <div className="grid grid-cols-3 gap-1.5">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
         {PRAYER_LABELS.map(({ key, label, icon }) => {
           const time = times[key];
           const isNext = key === nextPrayer;
@@ -141,6 +140,7 @@ export function MosquesManager({ mosques: initial }: { mosques: MosqueItem[] }) 
   const [saving, setSaving] = useState(false);
   const [geocoding, setGeocoding] = useState(false);
   const [error, setError] = useState("");
+  const [showForm, setShowForm] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<{ id: string; name: string } | null>(null);
 
   async function geocode() {
@@ -200,6 +200,7 @@ export function MosquesManager({ mosques: initial }: { mosques: MosqueItem[] }) 
         toast("Mosquée ajoutée", "success");
       }
       setForm(empty);
+      setShowForm(false);
       router.refresh();
     } catch {
       setError("Erreur lors de la sauvegarde");
@@ -232,15 +233,40 @@ export function MosquesManager({ mosques: initial }: { mosques: MosqueItem[] }) 
       lng: m.lng ? String(m.lng) : "",
       mawaqitId: m.mawaqitId ?? "",
     });
+    setShowForm(true);
+  }
+
+  function startAdd() {
+    setEditing(null);
+    setForm(empty);
+    setError("");
+    setShowForm(true);
+  }
+
+  function cancelForm() {
+    setShowForm(false);
+    setEditing(null);
+    setForm(empty);
+    setError("");
   }
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-white mb-6">Gestion des mosquées</h1>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-3">
+        <h1 className="text-xl sm:text-2xl font-bold text-white">Gestion des mosquées</h1>
+        {!showForm && (
+          <button
+            onClick={startAdd}
+            className="w-full sm:w-auto px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl text-sm transition shadow-lg shadow-emerald-600/10"
+          >
+            + Ajouter une mosquée
+          </button>
+        )}
+      </div>
 
-      <div className="grid grid-cols-2 gap-6">
-        {/* Form */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
+      {/* Form */}
+      {showForm && (
+        <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-6 mb-6 animate-in">
           <h2 className="text-white font-semibold mb-4">
             {editing ? "Modifier la mosquée" : "Ajouter une mosquée"}
           </h2>
@@ -269,8 +295,8 @@ export function MosquesManager({ mosques: initial }: { mosques: MosqueItem[] }) 
                 className="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-white focus:outline-none focus:border-emerald-500 text-sm"
               />
             </div>
-            <div className="flex gap-2">
-              <div className="flex-1">
+            <div className="grid grid-cols-2 gap-2">
+              <div>
                 <label className="block text-sm text-slate-300 mb-1">Latitude</label>
                 <input
                   value={form.lat}
@@ -279,7 +305,7 @@ export function MosquesManager({ mosques: initial }: { mosques: MosqueItem[] }) 
                   placeholder="50.4488"
                 />
               </div>
-              <div className="flex-1">
+              <div>
                 <label className="block text-sm text-slate-300 mb-1">Longitude</label>
                 <input
                   value={form.lng}
@@ -298,7 +324,6 @@ export function MosquesManager({ mosques: initial }: { mosques: MosqueItem[] }) 
               {geocoding ? "Géolocalisation..." : "📍 Géolocaliser automatiquement"}
             </button>
 
-            {/* Mawaqit ID */}
             <div>
               <label className="block text-sm text-slate-300 mb-1">
                 ID Mawaqit
@@ -325,60 +350,57 @@ export function MosquesManager({ mosques: initial }: { mosques: MosqueItem[] }) 
               >
                 {saving ? "Sauvegarde..." : editing ? "Modifier" : "Ajouter"}
               </button>
-              {editing && (
-                <button
-                  onClick={() => { setEditing(null); setForm(empty); }}
-                  className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-sm transition"
-                >
-                  Annuler
-                </button>
-              )}
+              <button
+                onClick={cancelForm}
+                className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-sm transition"
+              >
+                Annuler
+              </button>
             </div>
           </div>
         </div>
+      )}
 
-        {/* List */}
-        <div className="space-y-3">
-          {mosques.map((m) => (
-            <div key={m.id} className="bg-slate-900 border border-slate-800 rounded-xl p-4">
-              <div className="flex items-start justify-between">
-                <div className="flex-1 min-w-0">
-                  <div className="text-white font-medium">🕌 {m.name}</div>
-                  <div className="text-slate-400 text-sm mt-1">{m.address}, {m.city}</div>
-                  <div className="text-slate-500 text-xs mt-1 flex items-center gap-3">
-                    <span>{m.personCount} membre{m.personCount !== 1 ? "s" : ""}</span>
-                    <span>{m.lat && m.lng ? "GPS ✓" : "GPS ✗"}</span>
-                    {m.mawaqitId && (
-                      <span className="text-emerald-500">🕐 Mawaqit</span>
-                    )}
-                  </div>
-                </div>
-                <div className="flex gap-2 shrink-0 ml-3">
-                  <button
-                    onClick={() => startEdit(m)}
-                    className="px-3 py-1 bg-slate-700 hover:bg-slate-600 text-white text-xs rounded-md transition"
-                  >
-                    Modifier
-                  </button>
-                  <button
-                    onClick={() => setConfirmDelete({ id: m.id, name: m.name })}
-                    className="px-3 py-1 bg-red-900/30 hover:bg-red-900/60 text-red-400 text-xs rounded-lg transition"
-                  >
-                    Supprimer
-                  </button>
+      {/* Mosque List */}
+      <div className="space-y-3">
+        {mosques.map((m) => (
+          <div key={m.id} className="bg-slate-900 border border-slate-800 rounded-xl p-4">
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+              <div className="flex-1 min-w-0">
+                <div className="text-white font-medium">🕌 {m.name}</div>
+                <div className="text-slate-400 text-sm mt-1">{m.address}, {m.city}</div>
+                <div className="text-slate-500 text-xs mt-1 flex items-center gap-3 flex-wrap">
+                  <span>{m.personCount} membre{m.personCount !== 1 ? "s" : ""}</span>
+                  <span>{m.lat && m.lng ? "GPS ✓" : "GPS ✗"}</span>
+                  {m.mawaqitId && (
+                    <span className="text-emerald-500">🕐 Mawaqit</span>
+                  )}
                 </div>
               </div>
+              <div className="flex gap-2 shrink-0">
+                <button
+                  onClick={() => startEdit(m)}
+                  className="flex-1 sm:flex-none px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white text-xs rounded-md transition"
+                >
+                  Modifier
+                </button>
+                <button
+                  onClick={() => setConfirmDelete({ id: m.id, name: m.name })}
+                  className="flex-1 sm:flex-none px-3 py-1.5 bg-red-900/30 hover:bg-red-900/60 text-red-400 text-xs rounded-lg transition"
+                >
+                  Supprimer
+                </button>
+              </div>
+            </div>
 
-              {/* Horaires Mawaqit */}
-              {m.mawaqitId && <PrayerTimesPanel mawaqitId={m.mawaqitId} />}
-            </div>
-          ))}
-          {mosques.length === 0 && (
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 text-center text-slate-500">
-              Aucune mosquée
-            </div>
-          )}
-        </div>
+            {m.mawaqitId && <PrayerTimesPanel mawaqitId={m.mawaqitId} />}
+          </div>
+        ))}
+        {mosques.length === 0 && (
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 text-center text-slate-500">
+            Aucune mosquée
+          </div>
+        )}
       </div>
 
       <ConfirmModal

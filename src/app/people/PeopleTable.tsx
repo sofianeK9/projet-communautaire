@@ -7,7 +7,7 @@ import type { PersonWithMosque, MosqueBasic } from "@/types";
 import { useToast } from "@/components/ui/Toast";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { Download, Search, Users } from "lucide-react";
+import { Download, Search, Users, Eye, Pencil, Trash2 } from "lucide-react";
 
 interface Props {
   people: PersonWithMosque[];
@@ -82,22 +82,22 @@ export function PeopleTable({ people, total, page, limit, mosques, search: initi
   return (
     <div>
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-3">
-        <h1 className="text-2xl font-bold text-white">
-          Membres <span className="text-slate-500 text-lg font-normal">({total})</span>
+        <h1 className="text-xl sm:text-2xl font-bold text-white">
+          Membres <span className="text-slate-500 text-base sm:text-lg font-normal">({total})</span>
         </h1>
-        <div className="flex gap-2">
+        <div className="flex gap-2 w-full sm:w-auto">
           {people.length > 0 && (
             <button
               onClick={exportCSV}
               className="flex items-center gap-2 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm rounded-xl transition"
             >
               <Download className="w-4 h-4" />
-              Export CSV
+              <span className="hidden sm:inline">Export CSV</span>
             </button>
           )}
           <Link
             href="/people/new"
-            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl text-sm transition shadow-lg shadow-emerald-600/10"
+            className="flex-1 sm:flex-none text-center px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl text-sm transition shadow-lg shadow-emerald-600/10"
           >
             + Ajouter
           </Link>
@@ -105,7 +105,7 @@ export function PeopleTable({ people, total, page, limit, mosques, search: initi
       </div>
 
       {/* Filters */}
-      <div className="flex gap-3 mb-5">
+      <div className="flex flex-col sm:flex-row gap-3 mb-5">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
           <input
@@ -122,7 +122,7 @@ export function PeopleTable({ people, total, page, limit, mosques, search: initi
             setMosqueId(e.target.value);
             applyFilters(search, e.target.value);
           }}
-          className="px-3 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-emerald-500 text-sm"
+          className="w-full sm:w-auto px-3 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-emerald-500 text-sm"
         >
           <option value="">Toutes les mosquées</option>
           {mosques.map((m) => (
@@ -131,8 +131,8 @@ export function PeopleTable({ people, total, page, limit, mosques, search: initi
         </select>
       </div>
 
-      {/* Table */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+      {/* Desktop Table */}
+      <div className="hidden lg:block bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
         <table className="w-full">
           <thead>
             <tr className="border-b border-slate-800">
@@ -228,9 +228,84 @@ export function PeopleTable({ people, total, page, limit, mosques, search: initi
         </table>
       </div>
 
+      {/* Mobile Cards */}
+      <div className="lg:hidden space-y-3">
+        {people.map((p, i) => (
+          <div
+            key={p.id}
+            className="bg-slate-900 border border-slate-800 rounded-xl p-4 stat-card"
+            style={{ animationDelay: `${i * 30}ms` }}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <div className="w-10 h-10 rounded-xl bg-emerald-600/20 border border-emerald-600/30 flex items-center justify-center shrink-0">
+                  <span className="text-emerald-400 text-xs font-bold">{p.firstName[0]}{p.lastName[0]}</span>
+                </div>
+                <div className="min-w-0">
+                  <div className="text-white font-medium text-sm truncate">{p.firstName} {p.lastName}</div>
+                  <div className="text-slate-500 text-xs truncate">{p.address}, {p.zipCode} {p.city}</div>
+                </div>
+              </div>
+              <div className="flex items-center gap-1">
+                {p.lat ? (
+                  <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium bg-emerald-600/15 text-emerald-400">GPS</span>
+                ) : null}
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 mt-3 flex-wrap">
+              {p.mosque && (
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-600/20 text-emerald-400 border border-emerald-600/30">
+                  {p.mosque.name}
+                </span>
+              )}
+              {p.phone && (
+                <span className="text-slate-400 text-xs">{p.phone}</span>
+              )}
+            </div>
+
+            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-slate-800">
+              <Link
+                href={`/people/${p.id}`}
+                className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs rounded-lg transition"
+              >
+                <Eye className="w-3.5 h-3.5" /> Voir
+              </Link>
+              <Link
+                href={`/people/${p.id}/edit`}
+                className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs rounded-lg transition"
+              >
+                <Pencil className="w-3.5 h-3.5" /> Modifier
+              </Link>
+              <button
+                onClick={() => setConfirmDelete({ id: p.id, name: `${p.firstName} ${p.lastName}` })}
+                disabled={deleting === p.id}
+                className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-red-900/30 hover:bg-red-900/60 text-red-400 text-xs rounded-lg transition disabled:opacity-60"
+              >
+                <Trash2 className="w-3.5 h-3.5" /> {deleting === p.id ? "..." : "Suppr."}
+              </button>
+            </div>
+          </div>
+        ))}
+        {people.length === 0 && (
+          <EmptyState
+            icon={Users}
+            title="Aucun membre trouvé"
+            description={search ? "Essayez avec d'autres termes de recherche" : "Ajoutez votre premier membre pour commencer"}
+            action={
+              !search ? (
+                <Link href="/people/new" className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm rounded-xl transition">
+                  + Ajouter un membre
+                </Link>
+              ) : undefined
+            }
+          />
+        )}
+      </div>
+
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between mt-4">
+        <div className="flex flex-col sm:flex-row items-center justify-between mt-4 gap-3">
           <span className="text-slate-400 text-sm">
             Page {page} sur {totalPages} · {total} résultats
           </span>

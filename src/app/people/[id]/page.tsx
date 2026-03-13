@@ -39,29 +39,29 @@ export default async function PersonDetailPage({
   return (
     <div className="flex min-h-screen">
       <Sidebar />
-      <main className="flex-1 p-8">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 pt-14 lg:pt-8">
         <div className="max-w-2xl">
           {/* Header */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-3">
             <div>
               <Link href="/people" className="text-slate-400 hover:text-slate-300 text-sm mb-2 block">
                 ← Retour à la liste
               </Link>
-              <h1 className="text-2xl font-bold text-white">
+              <h1 className="text-xl sm:text-2xl font-bold text-white">
                 {person.firstName} {person.lastName}
               </h1>
             </div>
             <Link
               href={`/people/${id}/edit`}
-              className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg text-sm transition"
+              className="w-full sm:w-auto text-center px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg text-sm transition"
             >
               Modifier
             </Link>
           </div>
 
           {/* Info card */}
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4 mb-4">
-            <div className="grid grid-cols-2 gap-4">
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-6 space-y-4 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <div className="text-slate-400 text-xs uppercase tracking-wide mb-1">Adresse</div>
                 <div className="text-white">{person.address}</div>
@@ -109,8 +109,8 @@ export default async function PersonDetailPage({
                   {person.lat.toFixed(5)}, {person.lng.toFixed(5)}
                 </span>
               </div>
-              <div style={{ height: 280 }}>
-                <MapViewClient people={[serialized]} mosques={[]} height="280px" />
+              <div className="h-[200px] sm:h-[280px]">
+                <MapViewClient people={[serialized]} mosques={[]} height="100%" />
               </div>
             </div>
           )}

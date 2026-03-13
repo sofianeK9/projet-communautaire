@@ -13,10 +13,10 @@ export default async function NewPersonPage() {
   return (
     <div className="flex min-h-screen">
       <Sidebar />
-      <main className="flex-1 p-8">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 pt-14 lg:pt-8">
         <div className="max-w-2xl">
-          <h1 className="text-2xl font-bold text-white mb-6">Ajouter un membre</h1>
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
+          <h1 className="text-xl sm:text-2xl font-bold text-white mb-6">Ajouter un membre</h1>
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-6">
             <PersonForm mosques={mosques} />
           </div>
         </div>

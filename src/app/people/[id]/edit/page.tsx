@@ -39,15 +39,15 @@ export default async function EditPersonPage({
   return (
     <div className="flex min-h-screen">
       <Sidebar />
-      <main className="flex-1 p-8">
+      <main className="flex-1 p-4 sm:p-6 lg:p-8 pt-14 lg:pt-8">
         <div className="max-w-2xl">
           <Link href={`/people/${id}`} className="text-slate-400 hover:text-slate-300 text-sm mb-4 block">
             ← Retour à la fiche
           </Link>
-          <h1 className="text-2xl font-bold text-white mb-6">
+          <h1 className="text-xl sm:text-2xl font-bold text-white mb-6">
             Modifier — {person.firstName} {person.lastName}
           </h1>
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
+          <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 sm:p-6">
             <PersonForm person={serialized} mosques={mosques} />
           </div>
         </div>

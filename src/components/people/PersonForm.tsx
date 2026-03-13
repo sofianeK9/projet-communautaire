@@ -147,7 +147,7 @@ export default function PersonForm({ person, mosques }: PersonFormProps) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-slate-300 mb-1">Prénom *</label>
           <input
@@ -176,7 +176,7 @@ export default function PersonForm({ person, mosques }: PersonFormProps) {
         {errors.address && <p className="text-red-400 text-xs mt-1">{errors.address.message}</p>}
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-slate-300 mb-1">Code postal *</label>
           <input
@@ -196,39 +196,41 @@ export default function PersonForm({ person, mosques }: PersonFormProps) {
       </div>
 
       {/* Geocode */}
-      <div className="flex items-center gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
         <button
           type="button"
           onClick={geocode}
           disabled={geocoding}
-          className="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-sm rounded-lg transition disabled:opacity-60"
+          className="w-full sm:w-auto px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white text-sm rounded-lg transition disabled:opacity-60"
         >
           {geocoding ? "Géolocalisation..." : "📍 Géolocaliser l'adresse"}
         </button>
-        {lat && lng && (
-          <span className="text-xs text-emerald-400">
-            {lat.toFixed(5)}, {lng.toFixed(5)}
-          </span>
-        )}
-        {geocodeMsg && (
-          <span className={`text-xs ${
-            geocodeMsg.startsWith("✓") ? "text-emerald-400" :
-            geocodeMsg.startsWith("⚠️") ? "text-amber-400" :
-            "text-red-400"
-          }`}>
-            {geocodeMsg}
-          </span>
-        )}
+        <div className="flex flex-wrap items-center gap-2">
+          {lat && lng && (
+            <span className="text-xs text-emerald-400">
+              {lat.toFixed(5)}, {lng.toFixed(5)}
+            </span>
+          )}
+          {geocodeMsg && (
+            <span className={`text-xs ${
+              geocodeMsg.startsWith("✓") ? "text-emerald-400" :
+              geocodeMsg.startsWith("⚠️") ? "text-amber-400" :
+              "text-red-400"
+            }`}>
+              {geocodeMsg}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Mini map preview */}
       {lat && lng && (
-        <div className="rounded-xl overflow-hidden border border-slate-700" style={{ height: 200 }}>
-          <MapViewClient people={previewPerson} mosques={[]} height="200px" />
+        <div className="rounded-xl overflow-hidden border border-slate-700 h-[160px] sm:h-[200px]">
+          <MapViewClient people={previewPerson} mosques={[]} height="100%" />
         </div>
       )}
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-slate-300 mb-1">Téléphone</label>
           <input
@@ -278,18 +280,18 @@ export default function PersonForm({ person, mosques }: PersonFormProps) {
         </div>
       )}
 
-      <div className="flex gap-3">
+      <div className="flex flex-col sm:flex-row gap-3">
         <button
           type="submit"
           disabled={saving}
-          className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-60 text-white font-semibold rounded-lg transition"
+          className="flex-1 sm:flex-none px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-60 text-white font-semibold rounded-lg transition"
         >
           {saving ? "Sauvegarde..." : person ? "Modifier" : "Ajouter"}
         </button>
         <button
           type="button"
           onClick={() => router.back()}
-          className="px-6 py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition"
+          className="flex-1 sm:flex-none px-6 py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition"
         >
           Annuler
         </button>

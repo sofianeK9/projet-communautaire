@@ -71,9 +71,9 @@ export default function MapView({ people, mosques, height = "100%" }: MapViewPro
           bounds.push([mosque.lat, mosque.lng]);
           L.marker([mosque.lat, mosque.lng], { icon: mosqueIcon })
             .bindPopup(
-              `<div style="font-family:system-ui;min-width:180px">
-                <div style="font-weight:700;font-size:14px;margin-bottom:4px">🕌 ${mosque.name}</div>
-                <div style="color:#666;font-size:12px">${mosque.address}, ${mosque.city}</div>
+              `<div style="font-family:system-ui;min-width:140px;max-width:250px">
+                <div style="font-weight:700;font-size:13px;margin-bottom:4px">🕌 ${mosque.name}</div>
+                <div style="color:#666;font-size:11px;word-wrap:break-word">${mosque.address}, ${mosque.city}</div>
               </div>`
             )
             .addTo(map);
@@ -86,12 +86,12 @@ export default function MapView({ people, mosques, height = "100%" }: MapViewPro
           bounds.push([person.lat, person.lng]);
           const icon = person.mosqueId ? greenIcon : blueIcon;
           const popup = `
-            <div style="font-family:system-ui;min-width:200px">
-              <div style="font-weight:700;font-size:14px;margin-bottom:6px">${person.firstName} ${person.lastName}</div>
-              <div style="color:#666;font-size:12px;margin-bottom:4px">📍 ${person.address}, ${person.zipCode} ${person.city}</div>
-              ${person.phone ? `<div style="color:#666;font-size:12px;margin-bottom:4px">📞 ${person.phone}</div>` : ""}
-              ${person.mosque ? `<div style="color:#666;font-size:12px;margin-bottom:8px">🕌 ${person.mosque.name}</div>` : ""}
-              <a href="/people/${person.id}" style="display:inline-block;background:#10b981;color:#fff;padding:4px 12px;border-radius:6px;font-size:12px;font-weight:600;text-decoration:none">Voir la fiche</a>
+            <div style="font-family:system-ui;min-width:140px;max-width:260px">
+              <div style="font-weight:700;font-size:13px;margin-bottom:6px">${person.firstName} ${person.lastName}</div>
+              <div style="color:#666;font-size:11px;margin-bottom:4px;word-wrap:break-word">📍 ${person.address}, ${person.zipCode} ${person.city}</div>
+              ${person.phone ? `<div style="color:#666;font-size:11px;margin-bottom:4px">📞 ${person.phone}</div>` : ""}
+              ${person.mosque ? `<div style="color:#666;font-size:11px;margin-bottom:8px">🕌 ${person.mosque.name}</div>` : ""}
+              <a href="/people/${person.id}" style="display:inline-block;background:#10b981;color:#fff;padding:4px 12px;border-radius:6px;font-size:11px;font-weight:600;text-decoration:none">Voir la fiche</a>
             </div>
           `;
           L.marker([person.lat, person.lng], { icon }).bindPopup(popup).addTo(map);

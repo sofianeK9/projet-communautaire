@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/Toast";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { Download, Search, ClipboardList } from "lucide-react";
+import { Download, Search, ClipboardList, Pencil, Trash2 } from "lucide-react";
 
 export interface FicheSuivi {
   id: string;
@@ -269,22 +269,22 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
     <div>
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-white">Suivi communautaire</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-white">Suivi communautaire</h1>
           <p className="text-slate-500 text-sm mt-0.5">{fiches.length} fiche{fiches.length !== 1 ? "s" : ""} au total</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 w-full sm:w-auto">
           {filtered.length > 0 && (
             <button
               onClick={exportCSV}
               className="flex items-center gap-2 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm rounded-xl transition"
             >
               <Download className="w-4 h-4" />
-              CSV
+              <span className="hidden sm:inline">CSV</span>
             </button>
           )}
           <button
             onClick={startAdd}
-            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl text-sm transition shadow-lg shadow-emerald-600/10"
+            className="flex-1 sm:flex-none px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl text-sm transition shadow-lg shadow-emerald-600/10"
           >
             + Ajouter une fiche
           </button>
@@ -293,24 +293,24 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
 
       {/* Quick stats */}
       {filtered.length > 0 && (
-        <div className="flex gap-3 mb-5">
-          <div className="stat-card px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl flex items-center gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 sm:gap-3 mb-5">
+          <div className="stat-card px-3 sm:px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl flex items-center gap-2">
             <span className="text-emerald-400 text-sm font-bold">{assiduCount}</span>
             <span className="text-slate-500 text-xs">assidu{assiduCount !== 1 ? "s" : ""}</span>
           </div>
-          <div className="stat-card px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl flex items-center gap-2" style={{ animationDelay: "60ms" }}>
+          <div className="stat-card px-3 sm:px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl flex items-center gap-2" style={{ animationDelay: "60ms" }}>
             <span className="text-blue-400 text-sm font-bold">{activiteCount}</span>
             <span className="text-slate-500 text-xs">activité{activiteCount !== 1 ? "s" : ""}</span>
           </div>
-          <div className="stat-card px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl flex items-center gap-2" style={{ animationDelay: "120ms" }}>
+          <div className="stat-card px-3 sm:px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl flex items-center gap-2" style={{ animationDelay: "120ms" }}>
             <span className="text-violet-400 text-sm font-bold">{sortieHommeCount}</span>
             <span className="text-slate-500 text-xs">sortie{sortieHommeCount !== 1 ? "s" : ""} H</span>
           </div>
-          <div className="stat-card px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl flex items-center gap-2" style={{ animationDelay: "180ms" }}>
+          <div className="stat-card px-3 sm:px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl flex items-center gap-2" style={{ animationDelay: "180ms" }}>
             <span className="text-pink-400 text-sm font-bold">{sortieFemmeCount}</span>
             <span className="text-slate-500 text-xs">sortie{sortieFemmeCount !== 1 ? "s" : ""} F</span>
           </div>
-          <div className="stat-card px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl flex items-center gap-2" style={{ animationDelay: "240ms" }}>
+          <div className="stat-card col-span-2 sm:col-span-1 px-3 sm:px-4 py-2 bg-slate-900 border border-slate-800 rounded-xl flex items-center gap-2" style={{ animationDelay: "240ms" }}>
             <span className="text-amber-400 text-sm font-bold">{taalimNissaCount}</span>
             <span className="text-slate-500 text-xs">ta&apos;alim nissa</span>
           </div>
@@ -319,12 +319,12 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
 
       {/* Formulaire inline */}
       {showForm && (
-        <div className="bg-slate-900 border border-slate-700 rounded-xl p-6 mb-6 animate-in">
+        <div className="bg-slate-900 border border-slate-700 rounded-xl p-4 sm:p-6 mb-6 animate-in">
           <h2 className="text-white font-semibold mb-5">
             {editing ? "Modifier la fiche" : "Nouvelle fiche"}
           </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
             <div>
               <label className="block text-sm text-slate-300 mb-1">Nom *</label>
               <input
@@ -363,7 +363,7 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
             <div>
               <label className="block text-sm text-slate-300 mb-1">Fréquence ta&apos;alim</label>
               <select
@@ -404,9 +404,9 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
               ["mosqueeAssidument", "Fréquente assidûment la mosquée"],
               ["participationActivite", "Participe min. à une activité"],
             ] as [keyof typeof form, string][]).map(([field, label]) => (
-              <div key={field} className="flex items-center justify-between px-3 py-2.5 bg-slate-800 rounded-xl">
+              <div key={field} className="flex items-center justify-between px-3 py-2.5 bg-slate-800 rounded-xl gap-2">
                 <span className="text-sm text-slate-300">{label}</span>
-                <div className="flex gap-1">
+                <div className="flex gap-1 shrink-0">
                   <button
                     type="button"
                     onClick={() => set(field, true)}
@@ -425,11 +425,10 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
               </div>
             ))}
 
-            {/* Sortie Homme - visible uniquement si Homme */}
             {form.genre === "Homme" && (
-              <div className="flex items-center justify-between px-3 py-2.5 bg-slate-800 rounded-xl">
+              <div className="flex items-center justify-between px-3 py-2.5 bg-slate-800 rounded-xl gap-2">
                 <span className="text-sm text-slate-300">Sortie Homme</span>
-                <div className="flex gap-1">
+                <div className="flex gap-1 shrink-0">
                   <button type="button" onClick={() => set("sortieHomme", true)}
                     className={`px-3 py-1 rounded-lg text-xs font-medium transition ${form.sortieHomme ? "bg-emerald-600 text-white shadow-sm" : "bg-slate-700 text-slate-400 hover:bg-slate-600"}`}>
                     Oui
@@ -442,12 +441,11 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
               </div>
             )}
 
-            {/* Sortie Femme + Ta'alim Nissa - visible uniquement si Femme */}
             {form.genre === "Femme" && (
               <>
-                <div className="flex items-center justify-between px-3 py-2.5 bg-slate-800 rounded-xl">
+                <div className="flex items-center justify-between px-3 py-2.5 bg-slate-800 rounded-xl gap-2">
                   <span className="text-sm text-slate-300">Sortie Femme</span>
-                  <div className="flex gap-1">
+                  <div className="flex gap-1 shrink-0">
                     <button type="button" onClick={() => set("sortieFemme", true)}
                       className={`px-3 py-1 rounded-lg text-xs font-medium transition ${form.sortieFemme ? "bg-emerald-600 text-white shadow-sm" : "bg-slate-700 text-slate-400 hover:bg-slate-600"}`}>
                       Oui
@@ -458,9 +456,9 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
                     </button>
                   </div>
                 </div>
-                <div className="flex items-center justify-between px-3 py-2.5 bg-slate-800 rounded-xl">
+                <div className="flex items-center justify-between px-3 py-2.5 bg-slate-800 rounded-xl gap-2">
                   <span className="text-sm text-slate-300">Présence ta&apos;alim nissa</span>
-                  <div className="flex gap-1">
+                  <div className="flex gap-1 shrink-0">
                     <button type="button" onClick={() => set("presenceTaalimNissa", true)}
                       className={`px-3 py-1 rounded-lg text-xs font-medium transition ${form.presenceTaalimNissa ? "bg-emerald-600 text-white shadow-sm" : "bg-slate-700 text-slate-400 hover:bg-slate-600"}`}>
                       Oui
@@ -491,13 +489,13 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
             <button
               onClick={save}
               disabled={saving}
-              className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-60 text-white font-semibold rounded-xl text-sm transition shadow-lg shadow-emerald-600/10"
+              className="flex-1 sm:flex-none px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-60 text-white font-semibold rounded-xl text-sm transition shadow-lg shadow-emerald-600/10"
             >
               {saving ? "Sauvegarde..." : editing ? "Modifier" : "Ajouter"}
             </button>
             <button
               onClick={cancelForm}
-              className="px-5 py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-sm transition"
+              className="flex-1 sm:flex-none px-5 py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-sm transition"
             >
               Annuler
             </button>
@@ -507,7 +505,7 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
 
       {/* Recherche */}
       <div className="mb-4">
-        <div className="relative max-w-sm">
+        <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
           <input
             ref={searchRef}
@@ -515,13 +513,13 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
             placeholder="Rechercher nom, prénom, téléphone..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 text-sm transition"
+            className="w-full sm:max-w-sm pl-10 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 text-sm transition"
           />
         </div>
       </div>
 
-      {/* Tableau */}
-      <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-x-auto">
+      {/* Desktop Table */}
+      <div className="hidden lg:block bg-slate-900 border border-slate-800 rounded-xl overflow-x-auto">
         <table className="w-full min-w-[1300px]">
           <thead>
             <tr className="border-b border-slate-800">
@@ -605,6 +603,73 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile/Tablet Cards */}
+      <div className="lg:hidden space-y-3">
+        {filtered.map((f, i) => (
+          <div key={f.id} className="bg-slate-900 border border-slate-800 rounded-xl p-4 stat-card" style={{ animationDelay: `${i * 30}ms` }}>
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <div className="text-white font-medium text-sm">{f.nom} {f.prenom}</div>
+                <div className="flex items-center gap-2 mt-1 flex-wrap">
+                  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${(f.genre ?? "Homme") === "Femme" ? "bg-pink-600/20 text-pink-400 border-pink-600/30" : "bg-blue-600/20 text-blue-400 border-blue-600/30"}`}>
+                    {f.genre ?? "Homme"}
+                  </span>
+                  {f.situationFamiliale && (
+                    <span className="text-slate-400 text-xs">{f.situationFamiliale}</span>
+                  )}
+                </div>
+              </div>
+              <span className="text-slate-500 text-xs shrink-0">{formatDate(f.date)}</span>
+            </div>
+
+            <div className="flex flex-wrap gap-1.5 mt-3">
+              <Badge value={f.mosqueeAssidument} yes="Assidu" no="Non assidu" />
+              <Badge value={f.participationActivite} yes="Activité" no="Pas d'activité" />
+              <FreqBadge value={f.frequenceTaalim} />
+              {(f.genre ?? "Homme") === "Homme" && f.sortieHomme && <Badge value={true} yes="Sortie H" />}
+              {(f.genre ?? "Homme") === "Femme" && f.sortieFemme && <Badge value={true} yes="Sortie F" />}
+              {(f.genre ?? "Homme") === "Femme" && f.presenceTaalimNissa && <Badge value={true} yes="Ta'alim Nissa" />}
+            </div>
+
+            {f.divers && (
+              <div className="text-slate-500 text-xs mt-2 truncate" title={f.divers}>
+                {f.divers}
+              </div>
+            )}
+
+            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-slate-800">
+              <button
+                onClick={() => startEdit(f)}
+                className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs rounded-lg transition"
+              >
+                <Pencil className="w-3.5 h-3.5" /> Modifier
+              </button>
+              <button
+                onClick={() => setConfirmDelete({ id: f.id, name: `${f.prenom} ${f.nom}` })}
+                disabled={deleting === f.id}
+                className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-red-900/30 hover:bg-red-900/60 text-red-400 text-xs rounded-lg transition disabled:opacity-60"
+              >
+                <Trash2 className="w-3.5 h-3.5" /> {deleting === f.id ? "..." : "Supprimer"}
+              </button>
+            </div>
+          </div>
+        ))}
+        {filtered.length === 0 && (
+          <EmptyState
+            icon={ClipboardList}
+            title={search ? "Aucun résultat" : "Aucune fiche de suivi"}
+            description={search ? "Essayez avec d'autres termes" : "Ajoutez votre première fiche de suivi"}
+            action={
+              !search ? (
+                <button onClick={startAdd} className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm rounded-xl transition">
+                  + Ajouter une fiche
+                </button>
+              ) : undefined
+            }
+          />
+        )}
       </div>
 
       {filtered.length > 0 && (
