@@ -370,7 +370,7 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
             <div>
               <label className="block text-sm text-slate-300 mb-1">Fréquence ta&apos;alim</label>
               <select
@@ -394,18 +394,6 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
                   <option key={o.value} value={o.value}>{o.label}</option>
                 ))}
               </select>
-            </div>
-            <div>
-              <label className="block text-sm text-slate-300 mb-1">Nombre d&apos;enfants</label>
-              <input
-                type="number"
-                min="0"
-                max="20"
-                value={form.nombreEnfants}
-                onChange={(e) => set("nombreEnfants", e.target.value)}
-                placeholder="0"
-                className="w-full px-3 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 text-sm transition"
-              />
             </div>
             <div>
               <label className="block text-sm text-slate-300 mb-1">Date</label>
@@ -490,6 +478,29 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
                 </div>
               </>
             )}
+
+            {/* Enfants */}
+            <div className="flex items-center justify-between px-3 py-2.5 bg-slate-800 rounded-xl gap-3">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={form.nombreEnfants !== ""}
+                  onChange={(e) => set("nombreEnfants", e.target.checked ? "1" : "")}
+                  className="w-4 h-4 rounded accent-emerald-500"
+                />
+                <span className="text-sm text-slate-300">Avec enfant(s)</span>
+              </label>
+              {form.nombreEnfants !== "" && (
+                <input
+                  type="number"
+                  min="1"
+                  max="20"
+                  value={form.nombreEnfants}
+                  onChange={(e) => set("nombreEnfants", e.target.value)}
+                  className="w-20 px-3 py-1.5 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm text-center focus:outline-none focus:border-emerald-500 transition"
+                />
+              )}
+            </div>
           </div>
 
           <div className="mb-4">
