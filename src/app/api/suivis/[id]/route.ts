@@ -14,6 +14,7 @@ const SuiviSchema = z.object({
   sortieFemme: z.boolean().default(false),
   presenceTaalimNissa: z.boolean().default(false),
   situationFamiliale: z.string().optional().nullable(),
+  nombreEnfants: z.number().int().min(0).optional().nullable(),
   telephone: z.string().optional().nullable(),
   divers: z.string().optional().nullable(),
   date: z.string().optional(),

@@ -59,6 +59,7 @@ model FicheSuivi {
   frequenceTaalim       String?
   participationActivite Boolean  @default(false)
   situationFamiliale    String?
+  nombreEnfants         Int?
   telephone             String?
   divers                String?
   date                  DateTime @default(now())

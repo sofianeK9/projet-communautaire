@@ -19,6 +19,7 @@ export interface FicheSuivi {
   sortieFemme: boolean;
   presenceTaalimNissa: boolean;
   situationFamiliale: string | null;
+  nombreEnfants: number | null;
   telephone: string | null;
   divers: string | null;
   date: string;
@@ -35,6 +36,7 @@ interface FormState {
   sortieFemme: boolean;
   presenceTaalimNissa: boolean;
   situationFamiliale: string;
+  nombreEnfants: string;
   telephone: string;
   divers: string;
   date: string;
@@ -68,6 +70,7 @@ const emptyForm = (): FormState => ({
   sortieFemme: false,
   presenceTaalimNissa: false,
   situationFamiliale: "",
+  nombreEnfants: "",
   telephone: "",
   divers: "",
   date: new Date().toISOString().slice(0, 10),
@@ -134,6 +137,7 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
       sortieFemme: f.sortieFemme,
       presenceTaalimNissa: f.presenceTaalimNissa,
       situationFamiliale: f.situationFamiliale ?? "",
+      nombreEnfants: f.nombreEnfants != null ? String(f.nombreEnfants) : "",
       telephone: f.telephone ?? "",
       divers: f.divers ?? "",
       date: f.date.slice(0, 10),
@@ -172,6 +176,7 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
       sortieFemme: form.genre === "Femme" ? form.sortieFemme : false,
       presenceTaalimNissa: form.genre === "Femme" ? form.presenceTaalimNissa : false,
       situationFamiliale: form.situationFamiliale || null,
+      nombreEnfants: form.nombreEnfants !== "" ? parseInt(form.nombreEnfants, 10) : null,
       telephone: form.telephone || null,
       divers: form.divers || null,
       date: form.date,
@@ -195,9 +200,10 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
           body: JSON.stringify(payload),
         });
         if (!res.ok) throw new Error();
-        const created: FicheSuivi = await res.json();
+        const data = await res.json();
+        const { personCreated, ...created } = data as FicheSuivi & { personCreated: boolean };
         setFiches((prev) => [created, ...prev]);
-        toast("Fiche ajoutée", "success");
+        toast(personCreated ? "Fiche ajoutée · personne ajoutée à l'annuaire" : "Fiche ajoutée", "success");
       }
       cancelForm();
       router.refresh();
@@ -225,12 +231,13 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
   }
 
   function exportCSV() {
-    const headers = ["Nom", "Prénom", "Genre", "Mosquée assidue", "Fréq. ta'alim", "Activité", "Sortie Homme", "Sortie Femme", "Présence Ta'alim Nissa", "Situation familiale", "Téléphone", "Divers", "Date"];
+    const headers = ["Nom", "Prénom", "Genre", "Mosquée assidue", "Fréq. ta'alim", "Activité", "Sortie Homme", "Sortie Femme", "Présence Ta'alim Nissa", "Situation familiale", "Nb enfants", "Téléphone", "Divers", "Date"];
     const rows = filtered.map((f) => [
       f.nom, f.prenom, f.genre ?? "Homme", f.mosqueeAssidument ? "Oui" : "Non",
       f.frequenceTaalim ?? "", f.participationActivite ? "Oui" : "Non",
       f.sortieHomme ? "Oui" : "Non", f.sortieFemme ? "Oui" : "Non",
       f.presenceTaalimNissa ? "Oui" : "Non", f.situationFamiliale ?? "",
+      f.nombreEnfants != null ? String(f.nombreEnfants) : "",
       f.telephone ?? "", f.divers ?? "", formatDate(f.date),
     ]);
     const csv = [headers, ...rows].map((r) => r.map((c) => `"${c}"`).join(";")).join("\n");
@@ -387,6 +394,18 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
                   <option key={o.value} value={o.value}>{o.label}</option>
                 ))}
               </select>
+            </div>
+            <div>
+              <label className="block text-sm text-slate-300 mb-1">Nombre d&apos;enfants</label>
+              <input
+                type="number"
+                min="0"
+                max="20"
+                value={form.nombreEnfants}
+                onChange={(e) => set("nombreEnfants", e.target.value)}
+                placeholder="0"
+                className="w-full px-3 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 text-sm transition"
+              />
             </div>
             <div>
               <label className="block text-sm text-slate-300 mb-1">Date</label>
@@ -559,7 +578,10 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
                 <td className="px-4 py-3">{(f.genre ?? "Homme") === "Femme" ? <Badge value={f.sortieFemme} /> : <span className="text-slate-500 text-sm">—</span>}</td>
                 <td className="px-4 py-3">{(f.genre ?? "Homme") === "Femme" ? <Badge value={f.presenceTaalimNissa} /> : <span className="text-slate-500 text-sm">—</span>}</td>
                 <td className="px-4 py-3">
-                  <span className="text-slate-300 text-sm">{f.situationFamiliale ?? "—"}</span>
+                  <div className="text-slate-300 text-sm">{f.situationFamiliale ?? "—"}</div>
+                  {f.nombreEnfants != null && (
+                    <div className="text-slate-500 text-xs mt-0.5">{f.nombreEnfants} enfant{f.nombreEnfants !== 1 ? "s" : ""}</div>
+                  )}
                 </td>
                 <td className="px-4 py-3">
                   <span className="text-slate-400 text-sm">{formatDate(f.date)}</span>
@@ -618,6 +640,9 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
                   </span>
                   {f.situationFamiliale && (
                     <span className="text-slate-400 text-xs">{f.situationFamiliale}</span>
+                  )}
+                  {f.nombreEnfants != null && (
+                    <span className="text-slate-500 text-xs">{f.nombreEnfants} enfant{f.nombreEnfants !== 1 ? "s" : ""}</span>
                   )}
                 </div>
               </div>
