@@ -132,7 +132,7 @@ export function PeopleTable({ people, total, page, limit, mosques, search: initi
       </div>
 
       {/* Desktop Table */}
-      <div className="hidden lg:block bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+      <div className="hidden md:block bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
         <table className="w-full">
           <thead>
             <tr className="border-b border-slate-800">
@@ -229,7 +229,7 @@ export function PeopleTable({ people, total, page, limit, mosques, search: initi
       </div>
 
       {/* Mobile Cards */}
-      <div className="lg:hidden space-y-3">
+      <div className="md:hidden space-y-3">
         {people.map((p, i) => (
           <div
             key={p.id}

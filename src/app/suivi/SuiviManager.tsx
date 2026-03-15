@@ -370,7 +370,7 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
             <div>
               <label className="block text-sm text-slate-300 mb-1">Fréquence ta&apos;alim</label>
               <select
@@ -538,55 +538,55 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
       </div>
 
       {/* Desktop Table */}
-      <div className="hidden lg:block bg-slate-900 border border-slate-800 rounded-xl overflow-x-auto">
-        <table className="w-full min-w-[1300px]">
+      <div className="hidden xl:block bg-slate-900 border border-slate-800 rounded-xl overflow-x-auto">
+        <table className="w-full">
           <thead>
             <tr className="border-b border-slate-800">
-              <th className="text-left px-4 py-3 text-slate-400 text-xs font-medium uppercase tracking-wide">Nom / Prénom</th>
-              <th className="text-left px-4 py-3 text-slate-400 text-xs font-medium uppercase tracking-wide">Genre</th>
-              <th className="text-left px-4 py-3 text-slate-400 text-xs font-medium uppercase tracking-wide">Mosquée assidue</th>
-              <th className="text-left px-4 py-3 text-slate-400 text-xs font-medium uppercase tracking-wide">Fréq. ta&apos;alim</th>
-              <th className="text-left px-4 py-3 text-slate-400 text-xs font-medium uppercase tracking-wide">Activité</th>
-              <th className="text-left px-4 py-3 text-slate-400 text-xs font-medium uppercase tracking-wide">Sortie H</th>
-              <th className="text-left px-4 py-3 text-slate-400 text-xs font-medium uppercase tracking-wide">Sortie F</th>
-              <th className="text-left px-4 py-3 text-slate-400 text-xs font-medium uppercase tracking-wide">Ta&apos;alim Nissa</th>
-              <th className="text-left px-4 py-3 text-slate-400 text-xs font-medium uppercase tracking-wide">Situation</th>
-              <th className="text-left px-4 py-3 text-slate-400 text-xs font-medium uppercase tracking-wide">Date</th>
-              <th className="text-right px-4 py-3 text-slate-400 text-xs font-medium uppercase tracking-wide">Actions</th>
+              <th className="text-left px-3 py-3 text-slate-400 text-xs font-medium uppercase tracking-wide">Nom / Prénom</th>
+              <th className="text-left px-3 py-3 text-slate-400 text-xs font-medium uppercase tracking-wide">Genre</th>
+              <th className="text-left px-3 py-3 text-slate-400 text-xs font-medium uppercase tracking-wide">Mosquée</th>
+              <th className="text-left px-3 py-3 text-slate-400 text-xs font-medium uppercase tracking-wide">Ta&apos;alim</th>
+              <th className="text-left px-3 py-3 text-slate-400 text-xs font-medium uppercase tracking-wide">Activité</th>
+              <th className="text-left px-3 py-3 text-slate-400 text-xs font-medium uppercase tracking-wide">Sortie H</th>
+              <th className="text-left px-3 py-3 text-slate-400 text-xs font-medium uppercase tracking-wide">Sortie F</th>
+              <th className="text-left px-3 py-3 text-slate-400 text-xs font-medium uppercase tracking-wide">Nissa</th>
+              <th className="text-left px-3 py-3 text-slate-400 text-xs font-medium uppercase tracking-wide">Situation</th>
+              <th className="text-left px-3 py-3 text-slate-400 text-xs font-medium uppercase tracking-wide">Date</th>
+              <th className="text-right px-3 py-3 text-slate-400 text-xs font-medium uppercase tracking-wide">Actions</th>
             </tr>
           </thead>
           <tbody>
             {filtered.map((f, i) => (
               <tr key={f.id} className="border-b border-slate-800/50 hover:bg-slate-800/40 transition-colors table-row" style={{ animationDelay: `${i * 30}ms` }}>
-                <td className="px-4 py-3">
+                <td className="px-3 py-3">
                   <div className="text-white font-medium text-sm">{f.nom} {f.prenom}</div>
                   {f.divers && (
-                    <div className="text-slate-500 text-xs mt-0.5 truncate max-w-[160px]" title={f.divers}>
+                    <div className="text-slate-500 text-xs mt-0.5 truncate max-w-[140px]" title={f.divers}>
                       {f.divers}
                     </div>
                   )}
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-3 py-3">
                   <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${(f.genre ?? "Homme") === "Femme" ? "bg-pink-600/20 text-pink-400 border-pink-600/30" : "bg-blue-600/20 text-blue-400 border-blue-600/30"}`}>
-                    {f.genre ?? "Homme"}
+                    {(f.genre ?? "Homme") === "Femme" ? "F" : "H"}
                   </span>
                 </td>
-                <td className="px-4 py-3"><Badge value={f.mosqueeAssidument} /></td>
-                <td className="px-4 py-3"><FreqBadge value={f.frequenceTaalim} /></td>
-                <td className="px-4 py-3"><Badge value={f.participationActivite} /></td>
-                <td className="px-4 py-3">{(f.genre ?? "Homme") === "Homme" ? <Badge value={f.sortieHomme} /> : <span className="text-slate-500 text-sm">—</span>}</td>
-                <td className="px-4 py-3">{(f.genre ?? "Homme") === "Femme" ? <Badge value={f.sortieFemme} /> : <span className="text-slate-500 text-sm">—</span>}</td>
-                <td className="px-4 py-3">{(f.genre ?? "Homme") === "Femme" ? <Badge value={f.presenceTaalimNissa} /> : <span className="text-slate-500 text-sm">—</span>}</td>
-                <td className="px-4 py-3">
+                <td className="px-3 py-3"><Badge value={f.mosqueeAssidument} /></td>
+                <td className="px-3 py-3"><FreqBadge value={f.frequenceTaalim} /></td>
+                <td className="px-3 py-3"><Badge value={f.participationActivite} /></td>
+                <td className="px-3 py-3">{(f.genre ?? "Homme") === "Homme" ? <Badge value={f.sortieHomme} /> : <span className="text-slate-500 text-sm">—</span>}</td>
+                <td className="px-3 py-3">{(f.genre ?? "Homme") === "Femme" ? <Badge value={f.sortieFemme} /> : <span className="text-slate-500 text-sm">—</span>}</td>
+                <td className="px-3 py-3">{(f.genre ?? "Homme") === "Femme" ? <Badge value={f.presenceTaalimNissa} /> : <span className="text-slate-500 text-sm">—</span>}</td>
+                <td className="px-3 py-3">
                   <div className="text-slate-300 text-sm">{f.situationFamiliale ?? "—"}</div>
                   {f.nombreEnfants != null && (
                     <div className="text-slate-500 text-xs mt-0.5">{f.nombreEnfants} enfant{f.nombreEnfants !== 1 ? "s" : ""}</div>
                   )}
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-3 py-3">
                   <span className="text-slate-400 text-sm">{formatDate(f.date)}</span>
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-3 py-3">
                   <div className="flex items-center justify-end gap-1.5">
                     <button
                       onClick={() => startEdit(f)}
@@ -628,7 +628,7 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
       </div>
 
       {/* Mobile/Tablet Cards */}
-      <div className="lg:hidden space-y-3">
+      <div className="xl:hidden space-y-3">
         {filtered.map((f, i) => (
           <div key={f.id} className="bg-slate-900 border border-slate-800 rounded-xl p-4 stat-card" style={{ animationDelay: `${i * 30}ms` }}>
             <div className="flex items-start justify-between gap-3">

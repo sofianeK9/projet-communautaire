@@ -16,7 +16,7 @@ export default async function MapPage() {
   const withGeo = people.filter((p) => p.lat && p.lng).length;
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-screen overflow-hidden bg-slate-950">
       <Sidebar />
       <main className="flex-1 flex flex-col min-h-0">
         <div className="px-4 sm:px-6 lg:px-8 py-3 sm:py-4 bg-slate-900 border-b border-slate-800 shrink-0 pl-14 lg:pl-6">
