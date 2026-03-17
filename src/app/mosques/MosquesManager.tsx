@@ -148,11 +148,13 @@ export function MosquesManager({ mosques: initial }: { mosques: MosqueItem[] }) 
     setGeocoding(true);
     setError("");
     try {
-      const q = `${form.address}, ${form.city}`;
-      const res = await fetch(`/api/geocode?address=${encodeURIComponent(q)}`);
+      const params = new URLSearchParams({ address: form.address, city: form.city });
+      const res = await fetch(`/api/geocode?${params}`);
       if (!res.ok) throw new Error();
       const data = await res.json();
       setForm((f) => ({ ...f, lat: String(data.lat), lng: String(data.lng) }));
+      if (data.precision === "city") setError("⚠️ Rue introuvable — placé au centre de la ville");
+      else if (data.precision === "street") setError("⚠️ Numéro inconnu — placé sur la rue");
     } catch {
       setError("Adresse introuvable");
     } finally {

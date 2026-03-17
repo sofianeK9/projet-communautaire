@@ -1,24 +1,37 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 
-async function nominatim(q: string) {
+const HEADERS = {
+  "User-Agent": "AnnuaireCommunautaire/1.0 (local)",
+  "Accept-Language": "fr",
+};
+
+async function nominatimFree(q: string) {
   const res = await fetch(
-    `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=1`,
-    {
-      headers: {
-        "User-Agent": "AnnuaireCommunautaire/1.0 (local)",
-        "Accept-Language": "fr",
-      },
-    }
+    `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=1&countrycodes=fr`,
+    { headers: HEADERS }
   );
   if (!res.ok) return null;
   const data = await res.json();
   if (!data || data.length === 0) return null;
-  return {
-    lat: parseFloat(data[0].lat),
-    lng: parseFloat(data[0].lon),
-    displayName: data[0].display_name,
-  };
+  return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon), displayName: data[0].display_name };
+}
+
+async function nominatimStructured(street: string, city: string, zip: string) {
+  const params = new URLSearchParams({ format: "json", limit: "1", countrycodes: "fr" });
+  if (street) params.set("street", street);
+  if (city) params.set("city", city);
+  if (zip) params.set("postalcode", zip);
+  const res = await fetch(`https://nominatim.openstreetmap.org/search?${params}`, { headers: HEADERS });
+  if (!res.ok) return null;
+  const data = await res.json();
+  if (!data || data.length === 0) return null;
+  return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon), displayName: data[0].display_name };
+}
+
+/** Retire le numéro en début de rue : "10 Rue de la Paix" → "Rue de la Paix" */
+function stripNumber(street: string) {
+  return street.replace(/^\d+[\s,bis-]*/i, "").trim();
 }
 
 export async function GET(req: NextRequest) {
@@ -26,24 +39,50 @@ export async function GET(req: NextRequest) {
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { searchParams } = new URL(req.url);
-  const address = searchParams.get("address");
+  const address = searchParams.get("address") || "";
   const city = searchParams.get("city") || "";
   const zipCode = searchParams.get("zipCode") || "";
 
   if (!address) return NextResponse.json({ error: "Missing address" }, { status: 400 });
 
-  // 1. Essai avec l'adresse complète
-  let result = await nominatim(address);
+  type Result = { lat: number; lng: number; displayName: string; precision?: string } | null;
+  let result: Result = null;
 
-  // 2. Fallback : ville + code postal seulement
-  if (!result && (city || zipCode)) {
-    result = await nominatim(`${zipCode} ${city}`.trim());
-    if (result) result = { ...result, fallback: true } as typeof result & { fallback?: boolean };
+  // 1. Requête structurée exacte (street + city + zip)
+  result = await nominatimStructured(address, city, zipCode);
+  if (result) return NextResponse.json({ ...result, precision: "exact" });
+
+  // 2. Adresse libre complète
+  result = await nominatimFree(`${address}, ${zipCode} ${city}`.trim());
+  if (result) return NextResponse.json({ ...result, precision: "exact" });
+
+  // 3. Rue sans numéro + ville + CP
+  const streetNoNum = stripNumber(address);
+  if (streetNoNum && streetNoNum !== address) {
+    result = await nominatimStructured(streetNoNum, city, zipCode);
+    if (result) return NextResponse.json({ ...result, precision: "street" });
+
+    result = await nominatimFree(`${streetNoNum}, ${zipCode} ${city}`.trim());
+    if (result) return NextResponse.json({ ...result, precision: "street" });
   }
 
-  if (!result) {
-    return NextResponse.json({ error: "Adresse introuvable" }, { status: 404 });
+  // 4. Rue sans numéro + ville seule
+  if (streetNoNum && city) {
+    result = await nominatimFree(`${streetNoNum}, ${city}`);
+    if (result) return NextResponse.json({ ...result, precision: "street" });
   }
 
-  return NextResponse.json(result);
+  // 5. CP + ville seulement
+  if (zipCode || city) {
+    result = await nominatimFree(`${zipCode} ${city}`.trim());
+    if (result) return NextResponse.json({ ...result, precision: "city" });
+  }
+
+  // 6. Ville seule
+  if (city) {
+    result = await nominatimFree(city);
+    if (result) return NextResponse.json({ ...result, precision: "city" });
+  }
+
+  return NextResponse.json({ error: "Adresse introuvable" }, { status: 404 });
 }
