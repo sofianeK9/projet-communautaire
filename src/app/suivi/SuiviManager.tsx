@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { useToast } from "@/components/ui/Toast";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { Download, Search, ClipboardList, Pencil, Trash2 } from "lucide-react";
+import Link from "next/link";
+import { Download, Search, ClipboardList, Pencil, Trash2, Eye } from "lucide-react";
 
 export interface FicheSuivi {
   id: string;
@@ -599,6 +600,12 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
                 </td>
                 <td className="px-3 py-3">
                   <div className="flex items-center justify-end gap-1.5">
+                    <Link
+                      href={`/suivi/${f.id}`}
+                      className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs rounded-lg transition"
+                    >
+                      Voir
+                    </Link>
                     <button
                       onClick={() => startEdit(f)}
                       className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs rounded-lg transition"
@@ -676,6 +683,12 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
             )}
 
             <div className="flex items-center gap-2 mt-3 pt-3 border-t border-slate-800">
+              <Link
+                href={`/suivi/${f.id}`}
+                className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs rounded-lg transition"
+              >
+                <Eye className="w-3.5 h-3.5" /> Voir
+              </Link>
               <button
                 onClick={() => startEdit(f)}
                 className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs rounded-lg transition"
@@ -687,7 +700,7 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
                 disabled={deleting === f.id}
                 className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-red-900/30 hover:bg-red-900/60 text-red-400 text-xs rounded-lg transition disabled:opacity-60"
               >
-                <Trash2 className="w-3.5 h-3.5" /> {deleting === f.id ? "..." : "Supprimer"}
+                <Trash2 className="w-3.5 h-3.5" /> {deleting === f.id ? "..." : "Suppr."}
               </button>
             </div>
           </div>
