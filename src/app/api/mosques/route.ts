@@ -68,6 +68,7 @@ export async function DELETE(req: NextRequest) {
   if (!id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
 
   try {
+    await prisma.person.updateMany({ where: { mosqueId: id }, data: { mosqueId: null } });
     await prisma.mosque.delete({ where: { id } });
     return NextResponse.json({ success: true });
   } catch {

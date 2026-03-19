@@ -104,7 +104,19 @@ function FreqBadge({ value }: { value: string | null }) {
   );
 }
 
-export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
+export function SuiviManager({
+  fiches: initial,
+  total,
+  page,
+  limit,
+  search: initialSearch,
+}: {
+  fiches: FicheSuivi[];
+  total: number;
+  page: number;
+  limit: number;
+  search: string;
+}) {
   const router = useRouter();
   const { toast } = useToast();
   const [fiches, setFiches] = useState(initial);
@@ -113,10 +125,25 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(initialSearch);
   const [error, setError] = useState("");
   const [confirmDelete, setConfirmDelete] = useState<{ id: string; name: string } | null>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   const searchRef = useRef<HTMLInputElement>(null);
+  const totalPages = Math.ceil(total / limit);
+
+  function applySearch(value: string, newPage = 1) {
+    const params = new URLSearchParams();
+    if (value) params.set("search", value);
+    if (newPage > 1) params.set("page", String(newPage));
+    router.push(`/suivi?${params.toString()}`);
+  }
+
+  function handleSearch(value: string) {
+    setSearch(value);
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => applySearch(value), 350);
+  }
 
   function startAdd() {
     setEditing(null);
@@ -252,21 +279,13 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
     toast("Export CSV téléchargé", "success");
   }
 
-  const filtered = fiches.filter((f) => {
-    if (!search) return true;
-    const q = search.toLowerCase();
-    return (
-      f.nom.toLowerCase().includes(q) ||
-      f.prenom.toLowerCase().includes(q) ||
-      (f.telephone ?? "").includes(q)
-    );
-  });
+  const filtered = fiches;
 
   function formatDate(d: string) {
     return new Date(d).toLocaleDateString("fr-FR");
   }
 
-  // Stats
+  // Stats (sur la page courante)
   const assiduCount = filtered.filter((f) => f.mosqueeAssidument).length;
   const activiteCount = filtered.filter((f) => f.participationActivite).length;
   const sortieHommeCount = filtered.filter((f) => f.sortieHomme).length;
@@ -278,7 +297,7 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-3">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-white">Suivi communautaire</h1>
-          <p className="text-slate-500 text-sm mt-0.5">{fiches.length} fiche{fiches.length !== 1 ? "s" : ""} au total</p>
+          <p className="text-slate-500 text-sm mt-0.5">{total} fiche{total !== 1 ? "s" : ""} au total</p>
         </div>
         <div className="flex gap-2 w-full sm:w-auto">
           {filtered.length > 0 && (
@@ -543,7 +562,7 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
             type="text"
             placeholder="Rechercher nom, prénom, téléphone..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => handleSearch(e.target.value)}
             className="w-full sm:max-w-sm pl-10 pr-4 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/20 text-sm transition"
           />
         </div>
@@ -721,8 +740,33 @@ export function SuiviManager({ fiches: initial }: { fiches: FicheSuivi[] }) {
         )}
       </div>
 
-      {filtered.length > 0 && (
-        <p className="text-slate-500 text-xs mt-3">{filtered.length} fiche{filtered.length > 1 ? "s" : ""}</p>
+      {totalPages > 1 && (
+        <div className="flex flex-col sm:flex-row items-center justify-between mt-4 gap-3">
+          <span className="text-slate-400 text-sm">
+            Page {page} sur {totalPages} · {total} fiches
+          </span>
+          <div className="flex gap-2">
+            {page > 1 && (
+              <button
+                onClick={() => applySearch(search, page - 1)}
+                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-sm rounded-xl transition"
+              >
+                ← Précédent
+              </button>
+            )}
+            {page < totalPages && (
+              <button
+                onClick={() => applySearch(search, page + 1)}
+                className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-sm rounded-xl transition"
+              >
+                Suivant →
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+      {totalPages <= 1 && total > 0 && (
+        <p className="text-slate-500 text-xs mt-3">{total} fiche{total > 1 ? "s" : ""}</p>
       )}
 
       <ConfirmModal

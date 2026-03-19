@@ -20,6 +20,19 @@ const SuiviSchema = z.object({
   date: z.string().optional(),
 });
 
+export async function GET(
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const session = await auth();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+  const { id } = await params;
+  const fiche = await prisma.ficheSuivi.findUnique({ where: { id } });
+  if (!fiche) return NextResponse.json({ error: "Fiche introuvable" }, { status: 404 });
+  return NextResponse.json(fiche);
+}
+
 export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }

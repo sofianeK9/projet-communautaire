@@ -76,9 +76,9 @@ export async function POST(req: NextRequest) {
         firstName: parsed.data.prenom,
         lastName: parsed.data.nom,
         phone: parsed.data.telephone ?? null,
-        address: "",
-        city: "",
-        zipCode: "",
+        address: "À compléter",
+        city: "À compléter",
+        zipCode: "00000",
       },
     });
   }

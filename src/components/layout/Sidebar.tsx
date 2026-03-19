@@ -24,7 +24,7 @@ export default function Sidebar() {
   const nav = (
     <>
       <div className="p-6 border-b border-slate-800">
-        <div className="flex items-center gap-3">
+        <Link href="/dashboard" className="flex items-center gap-3 hover:opacity-80 transition">
           <div className="w-9 h-9 bg-emerald-600/20 border border-emerald-600/30 rounded-xl flex items-center justify-center">
             <span className="text-lg">🕌</span>
           </div>
@@ -32,7 +32,7 @@ export default function Sidebar() {
             <h1 className="font-bold text-white text-sm tracking-tight">Annuaire</h1>
             <p className="text-slate-500 text-[11px]">Communautaire</p>
           </div>
-        </div>
+        </Link>
       </div>
 
       <nav className="flex-1 p-3 space-y-0.5">
