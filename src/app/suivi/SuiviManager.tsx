@@ -568,9 +568,9 @@ export function SuiviManager({
         </div>
       </div>
 
-      {/* Desktop Table */}
-      <div className="hidden xl:block bg-slate-900 border border-slate-800 rounded-xl overflow-x-auto">
-        <table className="w-full">
+      {/* Table */}
+      <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-x-auto">
+        <table className="w-full min-w-[900px]">
           <thead>
             <tr className="border-b border-slate-800">
               <th className="text-left px-3 py-3 text-slate-400 text-xs font-medium uppercase tracking-wide">Nom / Prénom</th>
@@ -664,81 +664,6 @@ export function SuiviManager({
         </table>
       </div>
 
-      {/* Mobile/Tablet Cards */}
-      <div className="xl:hidden space-y-3">
-        {filtered.map((f, i) => (
-          <div key={f.id} className="bg-slate-900 border border-slate-800 rounded-xl p-4 stat-card" style={{ animationDelay: `${i * 30}ms` }}>
-            <div className="flex items-start justify-between gap-3">
-              <div className="min-w-0">
-                <div className="text-white font-medium text-sm">{f.nom} {f.prenom}</div>
-                <div className="flex items-center gap-2 mt-1 flex-wrap">
-                  <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border ${(f.genre ?? "Homme") === "Femme" ? "bg-pink-600/20 text-pink-400 border-pink-600/30" : "bg-blue-600/20 text-blue-400 border-blue-600/30"}`}>
-                    {f.genre ?? "Homme"}
-                  </span>
-                  {f.situationFamiliale && (
-                    <span className="text-slate-400 text-xs">{f.situationFamiliale}</span>
-                  )}
-                  {f.nombreEnfants != null && (
-                    <span className="text-slate-500 text-xs">{f.nombreEnfants} enfant{f.nombreEnfants !== 1 ? "s" : ""}</span>
-                  )}
-                </div>
-              </div>
-              <span className="text-slate-500 text-xs shrink-0">{formatDate(f.date)}</span>
-            </div>
-
-            <div className="flex flex-wrap gap-1.5 mt-3">
-              <Badge value={f.mosqueeAssidument} yes="Assidu" no="Non assidu" />
-              <Badge value={f.participationActivite} yes="Activité" no="Pas d'activité" />
-              <FreqBadge value={f.frequenceTaalim} />
-              {(f.genre ?? "Homme") === "Homme" && f.sortieHomme && <Badge value={true} yes="Sortie H" />}
-              {(f.genre ?? "Homme") === "Femme" && f.sortieFemme && <Badge value={true} yes="Sortie F" />}
-              {(f.genre ?? "Homme") === "Femme" && f.presenceTaalimNissa && <Badge value={true} yes="Ta'alim Nissa" />}
-            </div>
-
-            {f.divers && (
-              <div className="text-slate-500 text-xs mt-2 truncate" title={f.divers}>
-                {f.divers}
-              </div>
-            )}
-
-            <div className="flex items-center gap-2 mt-3 pt-3 border-t border-slate-800">
-              <Link
-                href={`/suivi/${f.id}`}
-                className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs rounded-lg transition"
-              >
-                <Eye className="w-3.5 h-3.5" /> Voir
-              </Link>
-              <button
-                onClick={() => startEdit(f)}
-                className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-slate-800 hover:bg-slate-700 text-white text-xs rounded-lg transition"
-              >
-                <Pencil className="w-3.5 h-3.5" /> Modifier
-              </button>
-              <button
-                onClick={() => setConfirmDelete({ id: f.id, name: `${f.prenom} ${f.nom}` })}
-                disabled={deleting === f.id}
-                className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-red-900/30 hover:bg-red-900/60 text-red-400 text-xs rounded-lg transition disabled:opacity-60"
-              >
-                <Trash2 className="w-3.5 h-3.5" /> {deleting === f.id ? "..." : "Suppr."}
-              </button>
-            </div>
-          </div>
-        ))}
-        {filtered.length === 0 && (
-          <EmptyState
-            icon={ClipboardList}
-            title={search ? "Aucun résultat" : "Aucune fiche de suivi"}
-            description={search ? "Essayez avec d'autres termes" : "Ajoutez votre première fiche de suivi"}
-            action={
-              !search ? (
-                <button onClick={startAdd} className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm rounded-xl transition">
-                  + Ajouter une fiche
-                </button>
-              ) : undefined
-            }
-          />
-        )}
-      </div>
 
       {totalPages > 1 && (
         <div className="flex flex-col sm:flex-row items-center justify-between mt-4 gap-3">
