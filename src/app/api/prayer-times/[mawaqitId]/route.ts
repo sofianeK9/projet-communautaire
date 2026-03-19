@@ -34,7 +34,7 @@ async function fetchPrayerTimes(mawaqitId: string): Promise<PrayerTimes | null> 
     const html = await res.text();
 
     // Extraire l'objet confData depuis le HTML
-    const match = html.match(/var confData\s*=\s*(\{[\s\S]*?\});/);
+    const match = html.match(/(?:var|let|const)\s+confData\s*=\s*(\{[\s\S]*?\});/);
     if (!match) return null;
 
     const conf = JSON.parse(match[1]);

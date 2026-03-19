@@ -78,10 +78,8 @@ export default function PersonForm({ person, mosques }: PersonFormProps) {
       const data = await res.json();
       setLat(data.lat);
       setLng(data.lng);
-      if (data.precision === "city") {
-        setGeocodeMsg("⚠️ Rue introuvable — placé au centre de la ville");
-      } else if (data.precision === "street") {
-        setGeocodeMsg("⚠️ Numéro inconnu — placé sur la rue");
+      if (data.fallback) {
+        setGeocodeMsg("⚠️ Rue inconnue dans OSM — placé au centre de la ville");
       } else {
         setGeocodeMsg("✓ Position trouvée !");
       }
