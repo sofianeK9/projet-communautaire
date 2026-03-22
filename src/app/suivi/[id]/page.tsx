@@ -135,11 +135,9 @@ export default async function SuiviDetailPage({
             <Row label="Fréquence du ta'alim">
               <FreqBadge value={fiche.frequenceTaalim} />
             </Row>
-            {isFemme && (
-              <Row label="Présence ta'alim nissa">
-                <Badge value={fiche.presenceTaalimNissa} />
-              </Row>
-            )}
+            <Row label="Présence ta'alim nissa">
+              <Badge value={fiche.presenceTaalimNissa} />
+            </Row>
           </Section>
 
           {/* Activités */}
@@ -147,26 +145,20 @@ export default async function SuiviDetailPage({
             <Row label="Participe à une activité">
               <Badge value={fiche.participationActivite} />
             </Row>
-            {!isFemme && (
-              <Row label="Sortie homme">
-                <Badge value={fiche.sortieHomme} />
-              </Row>
-            )}
-            {isFemme && (
-              <Row label="Sortie femme">
-                <Badge value={fiche.sortieFemme} />
-              </Row>
-            )}
+            <Row label="Sortie homme">
+              <Badge value={fiche.sortieHomme} />
+            </Row>
+            <Row label="Sortie femme">
+              <Badge value={fiche.sortieFemme} />
+            </Row>
           </Section>
 
           {/* Divers */}
-          {fiche.divers && (
-            <div className="lg:col-span-2">
-              <Section title="Divers">
-                <p className="text-slate-300 text-sm pt-2 leading-relaxed">{fiche.divers}</p>
-              </Section>
-            </div>
-          )}
+          <div className="lg:col-span-2">
+            <Section title="Divers">
+              <p className="text-slate-300 text-sm pt-2 leading-relaxed">{fiche.divers || "—"}</p>
+            </Section>
+          </div>
         </div>
       </main>
     </div>

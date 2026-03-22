@@ -63,13 +63,12 @@ export default function PersonForm({ person, mosques }: PersonFormProps) {
   const lastNameValue = watch("lastName");
 
   async function geocode() {
-    const q = `${addressValue}, ${zipCodeValue} ${cityValue}`;
     setGeocoding(true);
     setGeocodeMsg("");
 
     try {
       const params = new URLSearchParams({
-        address: q,
+        address: addressValue,
         city: cityValue,
         zipCode: zipCodeValue,
       });

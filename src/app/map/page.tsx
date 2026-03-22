@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import Sidebar from "@/components/layout/Sidebar";
 import MapViewClient from "@/components/map/MapViewClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function MapPage() {
   const session = await auth();
   if (!session) redirect("/login");
