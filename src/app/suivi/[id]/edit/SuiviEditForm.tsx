@@ -109,9 +109,9 @@ export function SuiviEditForm({ fiche }: { fiche: FicheData }) {
       mosqueeAssidument,
       frequenceTaalim: frequenceTaalim || null,
       participationActivite,
-      sortieHomme: genre === "Homme" ? sortieHomme : false,
-      sortieFemme: genre === "Femme" ? sortieFemme : false,
-      presenceTaalimNissa: genre === "Femme" ? presenceTaalimNissa : false,
+      sortieHomme,
+      sortieFemme,
+      presenceTaalimNissa,
       situationFamiliale: situationFamiliale || null,
       nombreEnfants: nombreEnfants !== "" ? parseInt(nombreEnfants, 10) : null,
       telephone: telephone || null,
@@ -189,15 +189,9 @@ export function SuiviEditForm({ fiche }: { fiche: FicheData }) {
       <div className="flex flex-col gap-2">
         <ToggleField label="Fréquente assidûment la mosquée" value={mosqueeAssidument} onChange={setMosqueeAssidument} />
         <ToggleField label="Participe min. à une activité" value={participationActivite} onChange={setParticipationActivite} />
-        {genre === "Homme" && (
-          <ToggleField label="Sortie Homme" value={sortieHomme} onChange={setSortieHomme} />
-        )}
-        {genre === "Femme" && (
-          <>
-            <ToggleField label="Sortie Femme" value={sortieFemme} onChange={setSortieFemme} />
-            <ToggleField label="Présence ta&apos;alim nissa" value={presenceTaalimNissa} onChange={setPresenceTaalimNissa} />
-          </>
-        )}
+        <ToggleField label="Sortie Homme" value={sortieHomme} onChange={setSortieHomme} />
+        <ToggleField label="Sortie Femme" value={sortieFemme} onChange={setSortieFemme} />
+        <ToggleField label="Présence ta&apos;alim nissa" value={presenceTaalimNissa} onChange={setPresenceTaalimNissa} />
 
         {/* Enfants */}
         <div className="flex items-center justify-between px-3 py-2.5 bg-slate-800 rounded-xl gap-3">

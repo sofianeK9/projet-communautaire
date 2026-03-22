@@ -200,9 +200,9 @@ export function SuiviManager({
       mosqueeAssidument: form.mosqueeAssidument,
       frequenceTaalim: form.frequenceTaalim || null,
       participationActivite: form.participationActivite,
-      sortieHomme: form.genre === "Homme" ? form.sortieHomme : false,
-      sortieFemme: form.genre === "Femme" ? form.sortieFemme : false,
-      presenceTaalimNissa: form.genre === "Femme" ? form.presenceTaalimNissa : false,
+      sortieHomme: form.sortieHomme,
+      sortieFemme: form.sortieFemme,
+      presenceTaalimNissa: form.presenceTaalimNissa,
       situationFamiliale: form.situationFamiliale || null,
       nombreEnfants: form.nombreEnfants !== "" ? parseInt(form.nombreEnfants, 10) : null,
       telephone: form.telephone || null,
@@ -452,52 +452,45 @@ export function SuiviManager({
               </div>
             ))}
 
-            {form.genre === "Homme" && (
-              <div className="flex items-center justify-between px-3 py-2.5 bg-slate-800 rounded-xl gap-2">
-                <span className="text-sm text-slate-300">Sortie Homme</span>
-                <div className="flex gap-1 shrink-0">
-                  <button type="button" onClick={() => set("sortieHomme", true)}
-                    className={`px-3 py-1 rounded-lg text-xs font-medium transition ${form.sortieHomme ? "bg-emerald-600 text-white shadow-sm" : "bg-slate-700 text-slate-400 hover:bg-slate-600"}`}>
-                    Oui
-                  </button>
-                  <button type="button" onClick={() => set("sortieHomme", false)}
-                    className={`px-3 py-1 rounded-lg text-xs font-medium transition ${!form.sortieHomme ? "bg-red-600/80 text-white shadow-sm" : "bg-slate-700 text-slate-400 hover:bg-slate-600"}`}>
-                    Non
-                  </button>
-                </div>
+            <div className="flex items-center justify-between px-3 py-2.5 bg-slate-800 rounded-xl gap-2">
+              <span className="text-sm text-slate-300">Sortie Homme</span>
+              <div className="flex gap-1 shrink-0">
+                <button type="button" onClick={() => set("sortieHomme", true)}
+                  className={`px-3 py-1 rounded-lg text-xs font-medium transition ${form.sortieHomme ? "bg-emerald-600 text-white shadow-sm" : "bg-slate-700 text-slate-400 hover:bg-slate-600"}`}>
+                  Oui
+                </button>
+                <button type="button" onClick={() => set("sortieHomme", false)}
+                  className={`px-3 py-1 rounded-lg text-xs font-medium transition ${!form.sortieHomme ? "bg-red-600/80 text-white shadow-sm" : "bg-slate-700 text-slate-400 hover:bg-slate-600"}`}>
+                  Non
+                </button>
               </div>
-            )}
-
-            {form.genre === "Femme" && (
-              <>
-                <div className="flex items-center justify-between px-3 py-2.5 bg-slate-800 rounded-xl gap-2">
-                  <span className="text-sm text-slate-300">Sortie Femme</span>
-                  <div className="flex gap-1 shrink-0">
-                    <button type="button" onClick={() => set("sortieFemme", true)}
-                      className={`px-3 py-1 rounded-lg text-xs font-medium transition ${form.sortieFemme ? "bg-emerald-600 text-white shadow-sm" : "bg-slate-700 text-slate-400 hover:bg-slate-600"}`}>
-                      Oui
-                    </button>
-                    <button type="button" onClick={() => set("sortieFemme", false)}
-                      className={`px-3 py-1 rounded-lg text-xs font-medium transition ${!form.sortieFemme ? "bg-red-600/80 text-white shadow-sm" : "bg-slate-700 text-slate-400 hover:bg-slate-600"}`}>
-                      Non
-                    </button>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between px-3 py-2.5 bg-slate-800 rounded-xl gap-2">
-                  <span className="text-sm text-slate-300">Présence ta&apos;alim nissa</span>
-                  <div className="flex gap-1 shrink-0">
-                    <button type="button" onClick={() => set("presenceTaalimNissa", true)}
-                      className={`px-3 py-1 rounded-lg text-xs font-medium transition ${form.presenceTaalimNissa ? "bg-emerald-600 text-white shadow-sm" : "bg-slate-700 text-slate-400 hover:bg-slate-600"}`}>
-                      Oui
-                    </button>
-                    <button type="button" onClick={() => set("presenceTaalimNissa", false)}
-                      className={`px-3 py-1 rounded-lg text-xs font-medium transition ${!form.presenceTaalimNissa ? "bg-red-600/80 text-white shadow-sm" : "bg-slate-700 text-slate-400 hover:bg-slate-600"}`}>
-                      Non
-                    </button>
-                  </div>
-                </div>
-              </>
-            )}
+            </div>
+            <div className="flex items-center justify-between px-3 py-2.5 bg-slate-800 rounded-xl gap-2">
+              <span className="text-sm text-slate-300">Sortie Femme</span>
+              <div className="flex gap-1 shrink-0">
+                <button type="button" onClick={() => set("sortieFemme", true)}
+                  className={`px-3 py-1 rounded-lg text-xs font-medium transition ${form.sortieFemme ? "bg-emerald-600 text-white shadow-sm" : "bg-slate-700 text-slate-400 hover:bg-slate-600"}`}>
+                  Oui
+                </button>
+                <button type="button" onClick={() => set("sortieFemme", false)}
+                  className={`px-3 py-1 rounded-lg text-xs font-medium transition ${!form.sortieFemme ? "bg-red-600/80 text-white shadow-sm" : "bg-slate-700 text-slate-400 hover:bg-slate-600"}`}>
+                  Non
+                </button>
+              </div>
+            </div>
+            <div className="flex items-center justify-between px-3 py-2.5 bg-slate-800 rounded-xl gap-2">
+              <span className="text-sm text-slate-300">Présence ta&apos;alim nissa</span>
+              <div className="flex gap-1 shrink-0">
+                <button type="button" onClick={() => set("presenceTaalimNissa", true)}
+                  className={`px-3 py-1 rounded-lg text-xs font-medium transition ${form.presenceTaalimNissa ? "bg-emerald-600 text-white shadow-sm" : "bg-slate-700 text-slate-400 hover:bg-slate-600"}`}>
+                  Oui
+                </button>
+                <button type="button" onClick={() => set("presenceTaalimNissa", false)}
+                  className={`px-3 py-1 rounded-lg text-xs font-medium transition ${!form.presenceTaalimNissa ? "bg-red-600/80 text-white shadow-sm" : "bg-slate-700 text-slate-400 hover:bg-slate-600"}`}>
+                  Non
+                </button>
+              </div>
+            </div>
 
             {/* Enfants */}
             <div className="flex items-center justify-between px-3 py-2.5 bg-slate-800 rounded-xl gap-3">
