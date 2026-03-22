@@ -1,55 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 
-async function nominatimFreeform(q: string) {
-  const res = await fetch(
-    `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=1&countrycodes=fr`,
-    {
-      headers: {
-        "User-Agent": "AnnuaireCommunautaire/1.0 (local)",
-        "Accept-Language": "fr",
-      },
-    }
-  );
-  if (!res.ok) return null;
-  const data = await res.json();
-  if (!data || data.length === 0) return null;
-  return {
-    lat: parseFloat(data[0].lat),
-    lng: parseFloat(data[0].lon),
-    displayName: data[0].display_name,
-  };
-}
-
-async function nominatimStructured(street: string, city: string, postalcode: string) {
-  const params = new URLSearchParams({
-    format: "json",
-    street,
-    city,
-    postalcode,
-    country: "France",
-    limit: "1",
-  });
-  const res = await fetch(
-    `https://nominatim.openstreetmap.org/search?${params}`,
-    {
-      headers: {
-        "User-Agent": "AnnuaireCommunautaire/1.0 (local)",
-        "Accept-Language": "fr",
-      },
-    }
-  );
-  if (!res.ok) return null;
-  const data = await res.json();
-  if (!data || data.length === 0) return null;
-  return {
-    lat: parseFloat(data[0].lat),
-    lng: parseFloat(data[0].lon),
-    displayName: data[0].display_name,
-  };
-}
-
 export const dynamic = "force-dynamic";
+
+interface GeoResult {
+  lat: number;
+  lng: number;
+  displayName: string;
+  fallback?: boolean;
+}
+
+// API Adresse du gouvernement français (BAN) — très précise pour les adresses FR
+async function banGeocode(q: string): Promise<GeoResult | null> {
+  const res = await fetch(
+    `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(q)}&limit=1`,
+    { headers: { Accept: "application/json" } }
+  );
+  if (!res.ok) return null;
+  const data = await res.json();
+  if (!data.features || data.features.length === 0) return null;
+
+  const feature = data.features[0];
+  const [lon, lat] = feature.geometry.coordinates;
+  const props = feature.properties;
+
+  return {
+    lat,
+    lng: lon,
+    displayName: props.label || props.name || q,
+  };
+}
 
 export async function GET(req: NextRequest) {
   const session = await auth();
@@ -62,18 +42,13 @@ export async function GET(req: NextRequest) {
 
   if (!address) return NextResponse.json({ error: "Missing address" }, { status: 400 });
 
-  // 1. Essai structuré (street + city + postalcode) — plus précis
-  let result = await nominatimStructured(address, city, zipCode);
+  // 1. Recherche complète : rue + code postal + ville
+  let result = await banGeocode(`${address} ${zipCode} ${city}`.trim());
 
-  // 2. Fallback : recherche libre avec l'adresse complète
-  if (!result) {
-    result = await nominatimFreeform(`${address}, ${zipCode} ${city}`);
-  }
-
-  // 3. Dernier recours : ville + code postal seulement
+  // 2. Fallback : ville + code postal seulement (positionne au centre-ville)
   if (!result && (city || zipCode)) {
-    result = await nominatimFreeform(`${zipCode} ${city}`.trim());
-    if (result) result = { ...result, fallback: true } as typeof result & { fallback?: boolean };
+    result = await banGeocode(`${zipCode} ${city}`.trim());
+    if (result) result = { ...result, fallback: true };
   }
 
   if (!result) {

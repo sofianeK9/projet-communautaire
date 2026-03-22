@@ -7,22 +7,22 @@ export interface GeocodeResult {
 export async function geocodeAddress(
   address: string
 ): Promise<GeocodeResult | null> {
-  const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`;
-
-  const res = await fetch(url, {
-    headers: {
-      "User-Agent": "AnnuaireCommunautaire/1.0",
-    },
-  });
+  const res = await fetch(
+    `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(address)}&limit=1`,
+    { headers: { Accept: "application/json" } }
+  );
 
   if (!res.ok) return null;
 
   const data = await res.json();
-  if (!data || data.length === 0) return null;
+  if (!data.features || data.features.length === 0) return null;
+
+  const feature = data.features[0];
+  const [lon, lat] = feature.geometry.coordinates;
 
   return {
-    lat: parseFloat(data[0].lat),
-    lng: parseFloat(data[0].lon),
-    displayName: data[0].display_name,
+    lat,
+    lng: lon,
+    displayName: feature.properties.label || address,
   };
 }
