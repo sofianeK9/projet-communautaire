@@ -149,7 +149,7 @@ export function MosquesManager({ mosques: initial }: { mosques: MosqueItem[] }) 
     setError("");
     try {
       const params = new URLSearchParams({ address: form.address, city: form.city });
-      const res = await fetch(`/api/geocode?${params}`);
+      const res = await fetch(`/api/geocode?${params}`, { cache: "no-store" });
       if (!res.ok) throw new Error();
       const data = await res.json();
       setForm((f) => ({ ...f, lat: String(data.lat), lng: String(data.lng) }));

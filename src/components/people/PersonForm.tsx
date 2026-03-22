@@ -72,7 +72,7 @@ export default function PersonForm({ person, mosques }: PersonFormProps) {
         city: cityValue,
         zipCode: zipCodeValue,
       });
-      const res = await fetch(`/api/geocode?${params}`);
+      const res = await fetch(`/api/geocode?${params}`, { cache: "no-store" });
       if (!res.ok) throw new Error("Adresse introuvable");
       const data = await res.json();
       setLat(data.lat);
